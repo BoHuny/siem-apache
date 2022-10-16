@@ -1,7 +1,14 @@
 <?php
-    if (!isset($_GET['error']) && isset($_POST['username']) && isset($_POST['password'])) {
-        $formLogin = $_POST['username'];
-        $formPassword = $_POST['password'];
+    require_once 'includes/utils.php';
+
+    if (isset($_POST['username']) && isset($_POST['password'])) {
+        $formLogin = htmlspecialchars($_POST['username']);
+        $formPassword = htmlspecialchars($_POST['password']);
+        if (matchSQLi($formLogin) || matchSQLi($formPassword)) {
+            error_log("Failed SQLi");
+            header('Location: register.php?error=1');
+            die();
+        }
         $dbconn = pg_connect('host=192.168.1.14 port=5432 dbname=enterprise user=postgres password=root');
         $query = pg_query($dbconn, 'SELECT * FROM users WHERE username = \''. $formLogin . '\';');
         $data = pg_fetch_all($query);
@@ -15,7 +22,7 @@
                 die();
             }
         }
-        error_log("Failed connection from " . $_SERVER['REMOTE_ADDR']);
+        error_log("Failed connection");
         header('Location: login.php?error=1');
         die();
     }
@@ -27,7 +34,7 @@
         <title>Login</title>
     </head>
     <body>
-        <?php if (isset($_GET['error'])) echo('<p id=\'error-box\' style=\'color:red\'>Mauvais login ou mot de passe</p>'); ?>
+        <?php if (isset($_GET['error'])) echo('<p id=\'error-box\' style=\'color:red\'>Connexion échouée</p>'); ?>
         <form action='login.php' method='post'>
             Username: <input type='text' name='username'><br>
             Password: <input type='password' name='password'><br>

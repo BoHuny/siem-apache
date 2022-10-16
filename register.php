@@ -1,4 +1,6 @@
 <?php
+    require_once 'includes/utils.php';
+
     function generateSalt() {
         $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         $salt = '';
@@ -10,8 +12,13 @@
 
     $wrong_credentials = false;
     if (isset($_POST['username']) && isset($_POST['password'])) {
-        $formLogin = $_POST['username'];
-        $formPassword = $_POST['password'];
+        $formLogin = htmlspecialchars($_POST['username']);
+        $formPassword = htmlspecialchars($_POST['password']);
+        if (matchSQLi($formLogin) || matchSQLi($formPassword)) {
+            error_log("Failed SQLi");
+            header('Location: register.php?error=1');
+            die();
+        }
         $salt = generateSalt();
         $dbconn = pg_connect('host=192.168.1.14 port=5432 dbname=enterprise user=postgres password=root');
         $password = hash('sha256', $formPassword . $salt);
@@ -28,6 +35,7 @@
         <title>Register</title>
     </head>
     <body>
+        <?php if (isset($_GET['error'])) echo('<p id=\'error-box\' style=\'color:red\'>Inscription échouée</p>'); ?>
         <form action='register.php' method='post'>
             Username: <input type='text' name='username'><br>
             Password: <input type='password' name='password'><br>
