@@ -20,11 +20,11 @@
             die();
         }
         $salt = generateSalt();
-        $dbconn = pg_connect('host=192.168.1.14 port=5432 dbname=enterprise user=postgres password=root');
+        $dbconn = getDatabaseConnection();
         $password = hash('sha256', $formPassword . $salt);
         $query = pg_query($dbconn, 'INSERT INTO users(username, password, salt) VALUES(\'' . $formLogin . '\', \'' . 
             $password . '\', \'' . $salt . '\');');
-        header('Location: welcome.php');
+        header('Location: welcome.php?user=' . $formLogin);
         die();
     }
 ?>

@@ -9,7 +9,7 @@
             header('Location: register.php?error=1');
             die();
         }
-        $dbconn = pg_connect('host=192.168.1.14 port=5432 dbname=enterprise user=postgres password=root');
+        $dbconn = getDatabaseConnection();
         $query = pg_query($dbconn, 'SELECT * FROM users WHERE username = \''. $formLogin . '\';');
         $data = pg_fetch_all($query);
         if ($data != null) {
