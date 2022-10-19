@@ -10,7 +10,8 @@
             die();
         }
         $dbconn = getDatabaseConnection();
-        $query = pg_query($dbconn, 'SELECT * FROM users WHERE username = \''. $formLogin . '\';');
+        $query = pg_query_params($dbconn, 'SELECT * FROM users WHERE username = $1;', array($formLogin));
+
         $data = pg_fetch_all($query);
         if ($data != null) {
             $user = $data[0];

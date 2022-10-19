@@ -22,8 +22,8 @@
         $salt = generateSalt();
         $dbconn = getDatabaseConnection();
         $password = hash('sha256', $formPassword . $salt);
-        $query = pg_query($dbconn, 'INSERT INTO users(username, password, salt) VALUES(\'' . $formLogin . '\', \'' . 
-            $password . '\', \'' . $salt . '\');');
+        $query = pg_query_params($dbconn, 'INSERT INTO users(username, password, salt) VALUES($1, $2, $3);', 
+            array($formLogin, $password, $salt));
         header('Location: welcome.php?user=' . $formLogin);
         die();
     }
