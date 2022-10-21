@@ -6,7 +6,7 @@
         $formPassword = htmlspecialchars($_POST['password']);
         if (matchSQLi($formLogin) || matchSQLi($formPassword)) {
             error_log("Failed SQLi");
-            header('Location: register.php?error=1');
+            header('Location: login.php?error=1');
             die();
         }
         $dbconn = getDatabaseConnection();
