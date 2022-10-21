@@ -36,7 +36,7 @@
     </head>
     <body>
         <?php if (isset($_GET['error'])) echo('<p id=\'error-box\' style=\'color:red\'>Inscription échouée</p>'); ?>
-        <form action='register.php' method='post'>
+        <form action='register.php' method='post' style='position:absolute;top:40%;left:40%'>
             Username: <input type='text' name='username'><br>
             Password: <input type='password' name='password'><br>
             <input type='submit' value="S'inscrire"/>
